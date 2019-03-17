@@ -3,7 +3,9 @@
 /.env*
 /.psc*
 /.spago/
+/credentials.json
 /generated-docs/
 /index.js
 /node_modules/
 /output/
+/token.json
