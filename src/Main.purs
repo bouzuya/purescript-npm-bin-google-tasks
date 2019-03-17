@@ -1,10 +1,15 @@
-module Main where
+module Main
+  ( main
+  ) where
 
 import Prelude
 
+import Data.Array as Array
 import Effect (Effect)
-import Effect.Console (log)
+import Effect.Console as Console
+import Node.Process as Process
 
 main :: Effect Unit
 main = do
-  log "🍝"
+  args <- map (Array.drop 2) Process.argv
+  Console.logShow args
