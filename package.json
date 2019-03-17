@@ -1,5 +1,5 @@
 {
-  "name": "purescript-npm-bin-google-tasks",
+  "name": "@bouzuya/google-tasks",
   "description": "Google Tasks client",
   "version": "0.0.0",
   "author": {

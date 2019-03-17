@@ -1,4 +1,4 @@
-# purescript-npm-bin-google-tasks
+# @bouzuya/google-tasks
 
 Google Tasks client
 
