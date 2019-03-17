@@ -1,4 +1,4 @@
-module Options
+module Command.Task.Options
   ( Options
   , help
   , parse
@@ -17,12 +17,11 @@ help :: String
 help =
   Array.intercalate
     "\n"
-    [ "Usage: google-tasks [options] <command>"
+    [ "Usage: google-tasks task [options] <command>"
     , ""
     , "Commands:"
     , ""
     , "  help display help"
-    , "  task task resource"
     , ""
     , "Options:"
     , ""
@@ -34,6 +33,5 @@ parse ::
   Array String
   -> Either String { arguments :: Array String, options ::  Options }
 parse =
-  CommandLineOption.parseWithOptions
-    { greedyArguments: true }
+  CommandLineOption.parse
     { help: CommandLineOption.booleanOption "help" (Just 'h') "display help" }
