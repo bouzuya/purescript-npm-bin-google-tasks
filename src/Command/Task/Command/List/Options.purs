@@ -11,6 +11,7 @@ import Data.Maybe (Maybe(..))
 
 type Options =
   { help :: Boolean
+  , taskListId :: String
   }
 
 help :: String
@@ -21,7 +22,8 @@ help =
     , ""
     , "Options:"
     , ""
-    , "  -h,--help display help"
+    , "  -h,--help           display help"
+    , "  --task-list-id <ID> TaskList id"
     , ""
     ]
 
@@ -30,4 +32,8 @@ parse ::
   -> Either String { arguments :: Array String, options ::  Options }
 parse =
   CommandLineOption.parse
-    { help: CommandLineOption.booleanOption "help" (Just 'h') "display help" }
+    { help: CommandLineOption.booleanOption "help" (Just 'h') "display help"
+    , taskListId:
+        CommandLineOption.stringOption
+          "task-list-id" Nothing "<ID>" "TaskList id" ""
+    }
