@@ -5,15 +5,17 @@ module Command.Task.Command.List
 import Prelude
 
 import Command.Task.Command.List.Options as Options
+import Control.Monad.Rec.Class as MonadRec
 import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either as Either
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect as Effect
 import Effect.Aff (Aff)
 import Effect.Aff as Aff
 import Effect.Class (liftEffect)
+import Effect.Class as Class
 import Effect.Class.Console as Console
 import Effect.Exception as Exception
 import Foreign (Foreign)
@@ -21,12 +23,11 @@ import Foreign.Object (Object)
 import Node.Encoding as Encoding
 import Node.FS.Sync as FS
 import Node.Path as Path
-import Simple.JSON (E)
+import Record as Record
 import Simple.JSON as SimpleJSON
 
 foreign import data Client :: Type
-foreign import listTasksImpl ::
-  forall r. { | r } -> Client -> Effect (Promise Foreign)
+foreign import listTasksImpl :: Foreign -> Client -> Effect (Promise Foreign)
 foreign import newClientImpl :: String -> String -> Effect Client
 
 type Response a =
@@ -53,6 +54,20 @@ type TaskResource =
   -- TODO
   }
 
+type TaskListParams =
+  { completedMax :: Maybe String
+  , completedMin :: Maybe String
+  , dueMax :: Maybe String
+  , dueMin :: Maybe String
+  , maxResults :: Maybe Int
+  , pageToken :: Maybe String
+  , showCompleted :: Maybe Boolean
+  , showDeleted :: Maybe Boolean
+  , showHidden :: Maybe Boolean
+  , tasklist :: String
+  , updatedMin :: Maybe String
+  }
+
 command :: Array String -> Effect Unit
 command args = do
   { options } <-
@@ -61,27 +76,45 @@ command args = do
     then Console.log Options.help
     else Aff.launchAff_ do
       client <- liftEffect (newClient ".") -- FIXME
-      responseEither <-
-        listTasks
-          { showCompleted: options.showCompleted
-          , showDeleted: options.showDeleted
-          , showHidden: options.showHidden
+      tasks <-
+        listAllTasks
+          { completedMax: Nothing
+          , completedMin: Nothing
+          , dueMax: Nothing
+          , dueMin: Nothing
+          , maxResults: Just 100
+          , pageToken: Nothing
+          , showCompleted: Just options.showCompleted
+          , showDeleted: Just options.showDeleted
+          , showHidden: Just options.showHidden
           , tasklist: options.taskListId
+          , updatedMin: Nothing
           }
           client
-      response <-
-        Either.either
-          (liftEffect <<< Exception.throw <<< show)
-          pure
-          responseEither
       liftEffect
-        (Effect.foreachE response.data.items \item -> do
-          Console.log (item.title <> " " <> item.id))
+        (Effect.foreachE tasks \task -> do
+          Console.log (task.title <> " " <> task.id))
 
-listTasks :: forall r. { | r } -> Client -> Aff (E (Response TaskListResponse))
+listAllTasks :: TaskListParams -> Client -> Aff (Array TaskResource)
+listAllTasks options client =
+  MonadRec.tailRecM go { pageToken: Nothing, tasks: [] }
+  where
+    go { pageToken, tasks } = do
+      { data: { items, nextPageToken } } <-
+        listTasks (Record.merge { pageToken } options) client
+      let tasks' = tasks <> items
+      pure
+        (case nextPageToken of
+          Nothing ->
+            MonadRec.Done tasks'
+          Just _ ->
+            MonadRec.Loop { pageToken: nextPageToken, tasks: tasks' })
+
+listTasks :: TaskListParams -> Client -> Aff (Response TaskListResponse)
 listTasks options client = do
-  response <- Promise.toAffE (listTasksImpl options client)
-  pure (SimpleJSON.read response)
+  response <- Promise.toAffE (listTasksImpl (SimpleJSON.write options) client)
+  Class.liftEffect
+    (Either.either (Exception.throw <<< show) pure (SimpleJSON.read response))
 
 newClient :: String -> Effect Client
 newClient dir = do
