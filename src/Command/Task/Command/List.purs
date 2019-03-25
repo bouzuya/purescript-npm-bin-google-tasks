@@ -63,7 +63,9 @@ command args = do
       client <- liftEffect (newClient ".") -- FIXME
       responseEither <-
         listTasks
-          { showCompleted: false
+          { showCompleted: options.showCompleted
+          , showDeleted: options.showDeleted
+          , showHidden: options.showHidden
           , tasklist: options.taskListId
           }
           client

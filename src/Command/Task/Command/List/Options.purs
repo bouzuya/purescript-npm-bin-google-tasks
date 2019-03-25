@@ -11,6 +11,9 @@ import Data.Maybe (Maybe(..))
 
 type Options =
   { help :: Boolean
+  , showCompleted :: Boolean
+  , showDeleted :: Boolean
+  , showHidden :: Boolean
   , taskListId :: String
   }
 
@@ -23,6 +26,9 @@ help =
     , "Options:"
     , ""
     , "  -h,--help           display help"
+    , "  --show-completed    show completed"
+    , "  --show-deleted      show deleted"
+    , "  --show-hidden       show hidden"
     , "  --task-list-id <ID> TaskList id"
     , ""
     ]
@@ -33,6 +39,15 @@ parse ::
 parse =
   CommandLineOption.parse
     { help: CommandLineOption.booleanOption "help" (Just 'h') "display help"
+    , showCompleted:
+        CommandLineOption.booleanOption
+          "show-completed" Nothing "show completed"
+    , showDeleted:
+        CommandLineOption.booleanOption
+          "show-deleted" Nothing "show deleted"
+    , showHidden:
+        CommandLineOption.booleanOption
+          "show-hidden" Nothing "show hidden"
     , taskListId:
         CommandLineOption.stringOption
           "task-list-id" Nothing "<ID>" "TaskList id" ""
