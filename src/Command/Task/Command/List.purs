@@ -93,17 +93,17 @@ command args = do
       client <- liftEffect (newClient ".") -- FIXME
       tasks <-
         listAllTasks
-          { completedMax: Nothing
-          , completedMin: Nothing
-          , dueMax: Nothing
-          , dueMin: Nothing
+          { completedMax: options.completedMax
+          , completedMin: options.completedMin
+          , dueMax: options.dueMax
+          , dueMin: options.dueMin
           , maxResults: Just 100
           , pageToken: Nothing
           , showCompleted: Just options.showCompleted
           , showDeleted: Just options.showDeleted
           , showHidden: Just options.showHidden
           , tasklist: options.taskListId
-          , updatedMin: Nothing
+          , updatedMin: options.updatedMin
           }
           client
       liftEffect

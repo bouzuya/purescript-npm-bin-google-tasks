@@ -10,11 +10,16 @@ import Data.Either (Either)
 import Data.Maybe (Maybe(..))
 
 type Options =
-  { help :: Boolean
+  { completedMax :: Maybe String
+  , completedMin :: Maybe String
+  , dueMax :: Maybe String
+  , dueMin :: Maybe String
+  , help :: Boolean
   , showCompleted :: Boolean
   , showDeleted :: Boolean
   , showHidden :: Boolean
   , taskListId :: String
+  , updatedMin :: Maybe String
   }
 
 help :: String
@@ -25,11 +30,16 @@ help =
     , ""
     , "Options:"
     , ""
-    , "  -h,--help           display help"
-    , "  --show-completed    show completed"
-    , "  --show-deleted      show deleted"
-    , "  --show-hidden       show hidden"
-    , "  --task-list-id <ID> TaskList id"
+    , "  --completed-max <DATETIME> completed max"
+    , "  --completed-min <DATETIME> completed min"
+    , "  --due-max <DATETIME>       due max"
+    , "  --due-max <DATETIME>       due min"
+    , "  --updated-min <DATETIME>   updated min"
+    , "  -h,--help                  display help"
+    , "  --show-completed           show completed"
+    , "  --show-deleted             show deleted"
+    , "  --show-hidden              show hidden"
+    , "  --task-list-id <ID>        TaskList id"
     , ""
     ]
 
@@ -38,7 +48,20 @@ parse ::
   -> Either String { arguments :: Array String, options ::  Options }
 parse =
   CommandLineOption.parse
-    { help: CommandLineOption.booleanOption "help" (Just 'h') "display help"
+    { completedMax:
+        CommandLineOption.maybeStringOption
+          "completed-max" Nothing "<DATETIME>" "completed max" Nothing
+    , completedMin:
+        CommandLineOption.maybeStringOption
+          "completed-min" Nothing "<DATETIME>" "completed min" Nothing
+    , dueMax:
+        CommandLineOption.maybeStringOption
+          "due-max" Nothing "<DATETIME>" "due max" Nothing
+    , dueMin:
+        CommandLineOption.maybeStringOption
+          "due-max" Nothing "<DATETIME>" "due min" Nothing
+    , help:
+        CommandLineOption.booleanOption "help" (Just 'h') "display help"
     , showCompleted:
         CommandLineOption.booleanOption
           "show-completed" Nothing "show completed"
@@ -51,4 +74,7 @@ parse =
     , taskListId:
         CommandLineOption.stringOption
           "task-list-id" Nothing "<ID>" "TaskList id" ""
+    , updatedMin:
+        CommandLineOption.maybeStringOption
+          "updated-min" Nothing "<DATETIME>" "updated min" Nothing
     }
