@@ -38,6 +38,20 @@ type Response a =
   , statusText :: String
   }
 
+type TaskListParams =
+  { completedMax :: Maybe String
+  , completedMin :: Maybe String
+  , dueMax :: Maybe String
+  , dueMin :: Maybe String
+  , maxResults :: Maybe Int
+  , pageToken :: Maybe String
+  , showCompleted :: Maybe Boolean
+  , showDeleted :: Maybe Boolean
+  , showHidden :: Maybe Boolean
+  , tasklist :: String
+  , updatedMin :: Maybe String
+  }
+
 type TaskListResponse =
   { etag :: String
   , items :: Array TaskResource
@@ -67,20 +81,6 @@ type TaskResource =
   , status :: String
   , title :: String
   , updated :: String -- datetime,
-  }
-
-type TaskListParams =
-  { completedMax :: Maybe String
-  , completedMin :: Maybe String
-  , dueMax :: Maybe String
-  , dueMin :: Maybe String
-  , maxResults :: Maybe Int
-  , pageToken :: Maybe String
-  , showCompleted :: Maybe Boolean
-  , showDeleted :: Maybe Boolean
-  , showHidden :: Maybe Boolean
-  , tasklist :: String
-  , updatedMin :: Maybe String
   }
 
 command :: Array String -> Effect Unit
