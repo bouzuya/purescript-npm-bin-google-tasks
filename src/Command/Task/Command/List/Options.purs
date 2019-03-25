@@ -14,6 +14,7 @@ type Options =
   , completedMin :: Maybe String
   , dueMax :: Maybe String
   , dueMin :: Maybe String
+  , format :: Maybe String
   , help :: Boolean
   , showCompleted :: Boolean
   , showDeleted :: Boolean
@@ -34,12 +35,13 @@ help =
     , "  --completed-min <DATETIME> completed min"
     , "  --due-max <DATETIME>       due max"
     , "  --due-max <DATETIME>       due min"
-    , "  --updated-min <DATETIME>   updated min"
+    , "  --format <FORMAT>          format"
     , "  -h,--help                  display help"
     , "  --show-completed           show completed"
     , "  --show-deleted             show deleted"
     , "  --show-hidden              show hidden"
     , "  --task-list-id <ID>        TaskList id"
+    , "  --updated-min <DATETIME>   updated min"
     , ""
     ]
 
@@ -59,7 +61,10 @@ parse =
           "due-max" Nothing "<DATETIME>" "due max" Nothing
     , dueMin:
         CommandLineOption.maybeStringOption
-          "due-max" Nothing "<DATETIME>" "due min" Nothing
+          "due-min" Nothing "<DATETIME>" "due min" Nothing
+    , format:
+        CommandLineOption.maybeStringOption
+          "format" Nothing "<FORMAT>" "format" Nothing
     , help:
         CommandLineOption.booleanOption "help" (Just 'h') "display help"
     , showCompleted:

@@ -4,12 +4,17 @@ module Command.Task.Command.List
 
 import Prelude
 
+import Bouzuya.TemplateString as TemplateString
+import Command.Task.Command.List.Options (Options)
 import Command.Task.Command.List.Options as Options
 import Control.Monad.Rec.Class as MonadRec
 import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either as Either
 import Data.Maybe (Maybe(..))
+import Data.Maybe as Maybe
+import Data.String as String
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect as Effect
 import Effect.Aff (Aff)
@@ -20,6 +25,7 @@ import Effect.Class.Console as Console
 import Effect.Exception as Exception
 import Foreign (Foreign)
 import Foreign.Object (Object)
+import Foreign.Object as Object
 import Node.Encoding as Encoding
 import Node.FS.Sync as FS
 import Node.Path as Path
@@ -106,9 +112,32 @@ command args = do
           , updatedMin: options.updatedMin
           }
           client
-      liftEffect
-        (Effect.foreachE tasks \task -> do
-          Console.log (task.title <> " " <> task.id))
+      liftEffect (Effect.foreachE tasks (Console.log <<< (format options)))
+
+format :: Options -> TaskResource -> String
+format options task =
+  TemplateString.template
+    (Maybe.fromMaybe "{{title}} {{id}}" options.format)
+    (Object.fromFoldable
+      [ Tuple "completed" (Maybe.fromMaybe "" task.completed)
+      -- , Tuple "deleted" task.deleted
+      , Tuple "due" (formatDue task.due)
+      , Tuple "etag" task.etag
+      -- , Tuple "hidden" task.hidden
+      , Tuple "id" task.id
+      , Tuple "kind" task.kind
+      -- , Tuple "links" task.links
+      , Tuple "notes" (Maybe.fromMaybe "" task.notes)
+      , Tuple "parent" (Maybe.fromMaybe "" task.parent)
+      , Tuple "position" task.position
+      , Tuple "selfLink" task.selfLink
+      , Tuple "status" task.status
+      , Tuple "title" task.title
+      , Tuple "updated" task.updated
+      ])
+
+formatDue :: Maybe String -> String
+formatDue = Maybe.maybe "9999-99-99" (String.take (String.length "YYYY-MM-DD"))
 
 listAllTasks :: TaskListParams -> Client -> Aff (Array TaskResource)
 listAllTasks options client =
