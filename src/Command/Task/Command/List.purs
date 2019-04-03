@@ -4,6 +4,8 @@ module Command.Task.Command.List
 
 import Prelude
 
+import Command.Task.Client (Client)
+import Command.Task.Client as Client
 import Command.Task.Command.List.Options as Options
 import Command.Task.Response (Response)
 import Command.Task.TaskResource (TaskResource)
@@ -22,15 +24,10 @@ import Effect.Class as Class
 import Effect.Class.Console as Console
 import Effect.Exception as Exception
 import Foreign (Foreign)
-import Node.Encoding as Encoding
-import Node.FS.Sync as FS
-import Node.Path as Path
 import Record as Record
 import Simple.JSON as SimpleJSON
 
-foreign import data Client :: Type
 foreign import listTasksImpl :: Foreign -> Client -> Effect (Promise Foreign)
-foreign import newClientImpl :: String -> String -> Effect Client
 
 type TaskListParams =
   { completedMax :: Maybe String
@@ -60,7 +57,7 @@ command args = do
   if options.help
     then Console.log Options.help
     else Aff.launchAff_ do
-      client <- liftEffect (newClient ".") -- FIXME
+      client <- liftEffect (Client.newClient ".") -- FIXME
       tasks <-
         listAllTasks
           { completedMax: options.completedMax
@@ -101,11 +98,3 @@ listTasks options client = do
   response <- Promise.toAffE (listTasksImpl (SimpleJSON.write options) client)
   Class.liftEffect
     (Either.either (Exception.throw <<< show) pure (SimpleJSON.read response))
-
-newClient :: String -> Effect Client
-newClient dir = do
-  credentials <-
-    FS.readTextFile Encoding.UTF8 (Path.concat [dir, "credentials.json"])
-  token <-
-    FS.readTextFile Encoding.UTF8 (Path.concat [dir, "token.json"])
-  newClientImpl credentials token
