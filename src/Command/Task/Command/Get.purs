@@ -5,6 +5,7 @@ module Command.Task.Command.Get
 import Prelude
 
 import Command.Task.Command.Get.Options as Options
+import Command.Task.Response (Response)
 import Command.Task.TaskResource (TaskResource)
 import Command.Task.TaskResource as TaskResource
 import Control.Promise (Promise)
@@ -18,7 +19,6 @@ import Effect.Class as Class
 import Effect.Class.Console as Console
 import Effect.Exception as Exception
 import Foreign (Foreign)
-import Foreign.Object (Object)
 import Node.Encoding as Encoding
 import Node.FS.Sync as FS
 import Node.Path as Path
@@ -27,14 +27,6 @@ import Simple.JSON as SimpleJSON
 foreign import data Client :: Type
 foreign import getTaskImpl :: Foreign -> Client -> Effect (Promise Foreign)
 foreign import newClientImpl :: String -> String -> Effect Client
-
-type Response a =
-  { config :: {} -- FIXME
-  , data :: a
-  , headers :: Object String
-  , status :: Int
-  , statusText :: String
-  }
 
 type TaskParams =
   { task :: String
