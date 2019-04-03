@@ -22,6 +22,7 @@ help =
     , "Commands:"
     , ""
     , "  help display help"
+    , "  get  get a task"
     , "  list list tasks"
     , ""
     , "Options:"

@@ -4,6 +4,7 @@ module Command.Task
 
 import Prelude
 
+import Command.Task.Command.Get as CommandGet
 import Command.Task.Command.List as CommandList
 import Command.Task.Options as Options
 import Data.Array as Array
@@ -21,6 +22,7 @@ command args = do
     else
       case Array.take 1 arguments of
         ["help"] -> Console.log Options.help
+        ["get"] -> CommandGet.command (Array.drop 1 arguments)
         ["list"] -> CommandList.command (Array.drop 1 arguments)
         _ -> do
           Console.logShow arguments
