@@ -4,17 +4,12 @@ module Command.Task.Command.Get
 
 import Prelude
 
-import Bouzuya.TemplateString as TemplateString
-import Command.Task.Command.Get.Options (Options)
 import Command.Task.Command.Get.Options as Options
 import Command.Task.TaskResource (TaskResource)
+import Command.Task.TaskResource as TaskResource
 import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either as Either
-import Data.Maybe (Maybe)
-import Data.Maybe as Maybe
-import Data.String as String
-import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Aff as Aff
@@ -24,7 +19,6 @@ import Effect.Class.Console as Console
 import Effect.Exception as Exception
 import Foreign (Foreign)
 import Foreign.Object (Object)
-import Foreign.Object as Object
 import Node.Encoding as Encoding
 import Node.FS.Sync as FS
 import Node.Path as Path
@@ -61,32 +55,8 @@ command args = do
           , tasklist: options.taskListId
           }
           client
-      liftEffect (Console.log (format options response.data))
-
-format :: Options -> TaskResource -> String
-format options task =
-  TemplateString.template
-    (Maybe.fromMaybe "{{title}} {{id}}" options.format)
-    (Object.fromFoldable
-      [ Tuple "completed" (Maybe.fromMaybe "" task.completed)
-      -- , Tuple "deleted" task.deleted
-      , Tuple "due" (formatDue task.due)
-      , Tuple "etag" task.etag
-      -- , Tuple "hidden" task.hidden
-      , Tuple "id" task.id
-      , Tuple "kind" task.kind
-      -- , Tuple "links" task.links
-      , Tuple "notes" (Maybe.fromMaybe "" task.notes)
-      , Tuple "parent" (Maybe.fromMaybe "" task.parent)
-      , Tuple "position" task.position
-      , Tuple "selfLink" task.selfLink
-      , Tuple "status" task.status
-      , Tuple "title" task.title
-      , Tuple "updated" task.updated
-      ])
-
-formatDue :: Maybe String -> String
-formatDue = Maybe.maybe "9999-99-99" (String.take (String.length "YYYY-MM-DD"))
+      liftEffect
+        (Console.log (TaskResource.format options.format response.data))
 
 getTask :: TaskParams -> Client -> Aff (Response TaskResource)
 getTask options client = do
