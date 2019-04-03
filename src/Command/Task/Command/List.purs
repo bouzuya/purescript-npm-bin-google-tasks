@@ -7,6 +7,7 @@ import Prelude
 import Bouzuya.TemplateString as TemplateString
 import Command.Task.Command.List.Options (Options)
 import Command.Task.Command.List.Options as Options
+import Command.Task.TaskResource (TaskResource)
 import Control.Monad.Rec.Class as MonadRec
 import Control.Promise (Promise)
 import Control.Promise as Promise
@@ -63,30 +64,6 @@ type TaskListResponse =
   , items :: Array TaskResource
   , kind :: String -- "tasks#tasks"
   , nextPageToken :: Maybe String
-  }
-
-type TaskResource =
-  { completed :: Maybe String -- datetime,
-  , deleted :: Maybe Boolean
-  , due :: Maybe String -- datetime,
-  , etag :: String
-  , hidden :: Maybe Boolean
-  , id :: String
-  , kind :: String -- "tasks#task"
-  , links ::
-      Maybe
-        (Array
-          { type :: String
-          , description :: String
-          , link :: String
-          })
-  , notes :: Maybe String
-  , parent :: Maybe String
-  , position :: String
-  , selfLink :: String
-  , status :: String
-  , title :: String
-  , updated :: String -- datetime,
   }
 
 command :: Array String -> Effect Unit
