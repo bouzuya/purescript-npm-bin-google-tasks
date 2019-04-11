@@ -1,3 +1,23 @@
+exports.executeCommandImpl = function (command) {
+  return function (options) {
+    return function (client) {
+      return function () {
+        const google = require('googleapis').google;
+
+        const tasks = google.tasks({ version: 'v1', auth: client });
+        return new Promise(function (resolve, reject) {
+          tasks.tasks[command](options, function (error, result) {
+            if (error)
+              reject(error);
+            else
+              resolve(result);
+          });
+        });
+      };
+    };
+  };
+};
+
 exports.newClientImpl = function (credentialsContent) {
   return function (tokenContent) {
     return function () {
