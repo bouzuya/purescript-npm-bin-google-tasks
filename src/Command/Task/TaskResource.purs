@@ -1,5 +1,6 @@
 module Command.Task.TaskResource
   ( TaskResource
+  , TaskResourceParams
   , format
   ) where
 
@@ -32,6 +33,30 @@ type TaskResource =
   , status :: String
   , title :: String
   , updated :: String -- datetime,
+  }
+
+type TaskResourceParams =
+  { completed :: Maybe String -- datetime,
+  , deleted :: Maybe Boolean
+  , due :: Maybe String -- datetime,
+  , etag :: Maybe String
+  , hidden :: Maybe Boolean
+  , id :: Maybe String
+  , kind :: Maybe String -- "tasks#task"
+  , links ::
+      Maybe
+        (Array
+          { type :: String
+          , description :: String
+          , link :: String
+          })
+  , notes :: Maybe String
+  , parent :: Maybe String
+  , position :: Maybe String
+  , selfLink :: Maybe String
+  , status :: Maybe String
+  , title :: Maybe String
+  , updated :: Maybe String -- datetime,
   }
 
 format :: Maybe String -> TaskResource -> String
