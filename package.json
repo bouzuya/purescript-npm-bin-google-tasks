@@ -1,7 +1,7 @@
 {
   "name": "@bouzuya/google-tasks",
   "description": "Google Tasks client",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": {
     "url": "https://bouzuya.net/",
     "name": "bouzuya",
