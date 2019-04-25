@@ -88,7 +88,7 @@ executeCommand command options client = do
     (Either.either (Exception.throw <<< show) pure (SimpleJSON.read response))
 
 deleteTask :: TaskDeleteParams -> Client -> Aff (Response (Maybe {}))
-deleteTask = executeCommand "get"
+deleteTask = executeCommand "delete"
 
 getTask :: TaskGetParams -> Client -> Aff (Response TaskResource)
 getTask = executeCommand "get"
