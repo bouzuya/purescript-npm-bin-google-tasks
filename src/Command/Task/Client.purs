@@ -1,9 +1,11 @@
 module Command.Task.Client
   ( Client
+  , TaskDeleteParams
   , TaskGetParams
   , TaskInsertParams
   , TaskListParams
   , TaskListResponse
+  , deleteTask
   , getTask
   , insertTask
   , listAllTasks
@@ -37,6 +39,11 @@ foreign import data Client :: Type
 foreign import executeCommandImpl ::
   String -> Foreign -> Client -> Effect (Promise Foreign)
 foreign import newClientImpl :: String -> String -> Effect Client
+
+type TaskDeleteParams =
+  { task :: String
+  , tasklist :: String
+  }
 
 type TaskGetParams =
   { task :: String
@@ -79,6 +86,9 @@ executeCommand command options client = do
       (executeCommandImpl command (SimpleJSON.write options) client)
   Class.liftEffect
     (Either.either (Exception.throw <<< show) pure (SimpleJSON.read response))
+
+deleteTask :: TaskDeleteParams -> Client -> Aff (Response (Maybe {}))
+deleteTask = executeCommand "get"
 
 getTask :: TaskGetParams -> Client -> Aff (Response TaskResource)
 getTask = executeCommand "get"

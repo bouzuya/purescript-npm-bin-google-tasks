@@ -4,6 +4,7 @@ module Command.Task
 
 import Prelude
 
+import Command.Task.Command.Delete as CommandDelete
 import Command.Task.Command.Get as CommandGet
 import Command.Task.Command.Insert as CommandInsert
 import Command.Task.Command.List as CommandList
@@ -22,8 +23,9 @@ command args = do
     then Console.log Options.help
     else
       case Array.take 1 arguments of
-        ["help"] -> Console.log Options.help
+        ["delete"] -> CommandDelete.command (Array.drop 1 arguments)
         ["get"] -> CommandGet.command (Array.drop 1 arguments)
+        ["help"] -> Console.log Options.help
         ["insert"] -> CommandInsert.command (Array.drop 1 arguments)
         ["list"] -> CommandList.command (Array.drop 1 arguments)
         _ -> do
