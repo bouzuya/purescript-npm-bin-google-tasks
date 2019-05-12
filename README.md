@@ -2,7 +2,7 @@
 
 Google Tasks client
 
-[w010][bouzuya/w010] app.
+[w010][bouzuya/w010] 2019-W11
 
 [bouzuya/w010]: https://github.com/bouzuya/w010
 
