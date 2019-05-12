@@ -5,9 +5,9 @@ module Command.Task.Command.Delete.Options
   ) where
 
 import Bouzuya.CommandLineOption as CommandLineOption
-import Data.Array as Array
 import Data.Either (Either)
 import Data.Maybe (Maybe(..))
+import Data.String as String
 
 type Options =
   { help :: Boolean
@@ -17,7 +17,7 @@ type Options =
 
 help :: String
 help =
-  Array.intercalate
+  String.joinWith
     "\n"
     [ "Usage: google-tasks task delete [options]"
     , ""
