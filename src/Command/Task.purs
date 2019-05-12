@@ -8,6 +8,7 @@ import Command.Task.Command.Delete as CommandDelete
 import Command.Task.Command.Get as CommandGet
 import Command.Task.Command.Insert as CommandInsert
 import Command.Task.Command.List as CommandList
+import Command.Task.Command.Update as CommandUpdate
 import Command.Task.Options as Options
 import Data.Array as Array
 import Data.Either as Either
@@ -28,6 +29,7 @@ command args = do
         ["help"] -> Console.log Options.help
         ["insert"] -> CommandInsert.command (Array.drop 1 arguments)
         ["list"] -> CommandList.command (Array.drop 1 arguments)
+        ["update"] -> CommandUpdate.command (Array.drop 1 arguments)
         _ -> do
           Console.logShow arguments
           Console.logShow options

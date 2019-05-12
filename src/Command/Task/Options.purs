@@ -26,6 +26,7 @@ help =
     , "  help      display help"
     , "  insert    insert a task"
     , "  list      list tasks"
+    , "  update    update a task"
     , ""
     , "Options:"
     , ""

@@ -5,12 +5,14 @@ module Command.Task.Client
   , TaskInsertParams
   , TaskListParams
   , TaskListResponse
+  , TaskUpdateParams
   , deleteTask
   , getTask
   , insertTask
   , listAllTasks
   , listTasks
   , newClient
+  , updateTask
   ) where
 
 import Prelude
@@ -78,6 +80,12 @@ type TaskListResponse =
   , nextPageToken :: Maybe String
   }
 
+type TaskUpdateParams =
+  { task :: String
+  , resource :: TaskResourceParams
+  , tasklist :: String
+  }
+
 executeCommand ::
   forall a b. ReadForeign b => WriteForeign a => String -> a -> Client -> Aff b
 executeCommand command options client = do
@@ -113,6 +121,9 @@ listAllTasks options client =
 
 listTasks :: TaskListParams -> Client -> Aff (Response TaskListResponse)
 listTasks = executeCommand "list"
+
+updateTask :: TaskUpdateParams -> Client -> Aff (Response TaskResource)
+updateTask = executeCommand "update"
 
 newClient :: String -> Effect Client
 newClient dir = do
